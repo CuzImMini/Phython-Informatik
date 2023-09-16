@@ -27,6 +27,16 @@ def getCurrencyConversion(currencyfrom, currencyto):
     return conversionmultiplier
 
 
+# Methode für API Prüfung
+def checkAPI():
+    # Abfrage API Code ob working
+    request = requests.get('https://open.er-api.com/v6/latest/USD')
+    if request.status_code == 200:
+        return True
+    else:
+        return False
+
+
 # Methode für Berechnung
 def calculate():
     print('Berechnungen werden ausgeführt!')
@@ -72,6 +82,9 @@ mainWindow.resizable(False, False)
 mainTitle = tkinter.Label(mainWindow, text='Bitte wählen Sie die Währungen aus und tragen Sie einen Wert ein!')
 mainTitle.place(x=0, y=50, width=600)
 
+subTitle = tkinter.Label(mainWindow, text='Zum umrechnen Enter drücken!')
+subTitle.place(x=0, y=350, width=600)
+
 # Währungsauswahl
 origin_currency_var = tkinter.StringVar(mainWindow)
 origin_currency_var.set('USD')
@@ -102,7 +115,14 @@ resultLabel.place(x=200, y=300, width=100)
 resultEntry = tkinter.Entry(mainWindow)
 resultEntry.place(x=300, y=300, width=100)
 
-mainWindow.mainloop()
-
-# Berechne wenn Enter gedrückt wird
+# Berechne, wenn Enter gedrückt wird
 mainWindow.bind('<Return>', lambda event=None: calculate())
+
+# Add a status indicator in the top right that turns green when the API is working
+if checkAPI():
+    statusIndicator = tkinter.Label(mainWindow, text='API bereit', bg='green')
+else:
+    statusIndicator = tkinter.Label(mainWindow, text='API Fehler', bg='red')
+statusIndicator.place(x=500, y=0, width=100)
+
+mainWindow.mainloop()
