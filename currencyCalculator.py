@@ -5,18 +5,21 @@ import requests
 
 # Methode für API Zugriff
 def getCurrencyConversion(currencyfrom, currencyto):
-    # Abfrage API zu angegebener Währung
-    if currencyfrom == 'EUR':
-        request = requests.get('https://open.er-api.com/v6/latest/EUR')
-    elif currencyfrom == 'USD':
-        request = requests.get('https://open.er-api.com/v6/latest/USD')
-    elif currencyfrom == 'TRY':
-        request = requests.get('https://open.er-api.com/v6/latest/TRY')
-    elif currencyfrom == 'CHF':
-        request = requests.get('https://open.er-api.com/v6/latest/CHF')
-    elif currencyfrom == 'JPY':
-        request = requests.get('https://open.er-api.com/v6/latest/JPY')
-    else:
+    try:
+        # Abfrage API zu angegebener Währung
+        if currencyfrom == 'EUR':
+            request = requests.get('https://open.er-api.com/v6/latest/EUR')
+        elif currencyfrom == 'USD':
+            request = requests.get('https://open.er-api.com/v6/latest/USD')
+        elif currencyfrom == 'TRY':
+            request = requests.get('https://open.er-api.com/v6/latest/TRY')
+        elif currencyfrom == 'CHF':
+            request = requests.get('https://open.er-api.com/v6/latest/CHF')
+        elif currencyfrom == 'JPY':
+            request = requests.get('https://open.er-api.com/v6/latest/JPY')
+        else:
+            print("Fehler bei der API Anfrage!")
+    except ConnectionError:
         print("Fehler bei der API Anfrage!")
         return None
 
@@ -29,11 +32,14 @@ def getCurrencyConversion(currencyfrom, currencyto):
 
 # Methode für API Prüfung
 def checkAPI():
-    # Abfrage API Code ob working
-    request = requests.get('https://open.er-api.com/v6/latest/USD')
-    if request.status_code == 200:
-        return True
-    else:
+    # Abfrage API Code ob funktioniert
+    try:
+        request = requests.get('https://open.er-api.com/v6/latest/USD')
+        if request.status_code == 200:
+            return True
+        else:
+            return False
+    except ConnectionError:
         return False
 
 
@@ -75,6 +81,8 @@ print("Programm gestartet!")
 
 # GUI
 mainWindow = tkinter.Tk()
+mainCanvas = tkinter.Canvas(mainWindow, width=600, height=450)
+
 mainWindow.title('Währungsumrechner')
 mainWindow.geometry("600x450")
 mainWindow.resizable(False, False)
@@ -120,9 +128,15 @@ mainWindow.bind('<Return>', lambda event=None: calculate())
 
 # Add a status indicator in the top right that turns green when the API is working
 if checkAPI():
-    statusIndicator = tkinter.Label(mainWindow, text='API bereit', bg='green')
-else:
-    statusIndicator = tkinter.Label(mainWindow, text='API Fehler', bg='red')
-statusIndicator.place(x=500, y=0, width=100)
+    statusIndicator = tkinter.Label(mainWindow, text='API bereit')
+    statusIndicator.place(x=35, y=10)
+    mainCanvas.create_oval(15, 15, 30, 30, outline="black", fill="green", width=1)
 
+
+else:
+    statusIndicator = tkinter.Label(mainWindow, text='API nicht bereit')
+    statusIndicator.place(x=35, y=10)
+    mainCanvas.create_oval(15, 15, 30, 30, outline="black", fill="red", width=1)
+
+mainCanvas.pack()
 mainWindow.mainloop()
