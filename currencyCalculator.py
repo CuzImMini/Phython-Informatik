@@ -48,39 +48,40 @@ def calculate():
     print('Berechnungen werden ausgeführt!')
 
     # Variablen von GUI
-    currencyfromvalue = origin_currency_var.get()
-    currencytovalue = target_currency_var.get()
+    origin_currency_value = origin_currency_var.get()
+    target_currency_value = target_currency_var.get()
     amount = amountEntry.get()
 
     # Konvertierung von Betrag in Zahl
     amount = float(amount)
 
     # Abrufen von Umrechnungsfaktor
-    conversionmultiplier = getCurrencyConversion(currencyfromvalue, currencytovalue)
+    conversionmultiplier = getCurrencyConversion(origin_currency_value, target_currency_value)
 
     # Löschen Ergebnis
     resultEntry.delete(0, tkinter.END)
 
-    # Ergebnis einfügen#Einfügen Ergebnis
-    if currencytovalue == 'EUR':
+    # Währungsicon einfügen
+    if target_currency_value == 'EUR':
         resultEntry.insert(0, ' €')
-    elif currencytovalue == 'USD':
+    elif target_currency_value == 'USD':
         resultEntry.insert(0, ' $')
-    elif currencytovalue == 'TRY':
+    elif target_currency_value == 'TRY':
         resultEntry.insert(0, ' ₺')
-    elif currencytovalue == 'CHF':
+    elif target_currency_value == 'CHF':
         resultEntry.insert(0, ' CHF')
-    elif currencytovalue == 'JPY':
+    elif target_currency_value == 'JPY':
         resultEntry.insert(0, ' ¥')
 
     resultEntry.insert(0, round(amount * conversionmultiplier, 2))
 
 
 # Programm
-print("Programm gestartet!")
+print("Programm gestartet! mit Startwährung: ")
 
 # GUI
 mainWindow = tkinter.Tk()
+# Canvas für API-Indikator
 mainCanvas = tkinter.Canvas(mainWindow, width=600, height=450)
 
 mainWindow.title('Währungsumrechner')
@@ -93,19 +94,19 @@ mainTitle.place(x=0, y=50, width=600)
 subTitle = tkinter.Label(mainWindow, text='Zum umrechnen Enter drücken!')
 subTitle.place(x=0, y=350, width=600)
 
-# Währungsauswahl
+# Währungsauswahl-Variabeln
 origin_currency_var = tkinter.StringVar(mainWindow)
 origin_currency_var.set('USD')
 target_currency_var = tkinter.StringVar(mainWindow)
 target_currency_var.set('EUR')
 
-# Währungsauswahl von
+# Startwährung Switcher
 origin_currency_label = tkinter.Label(mainWindow, text='Währung von:')
 origin_currency_label.place(x=200, y=100, width=100)
 origin_currency_picker = tkinter.OptionMenu(mainWindow, origin_currency_var, 'USD', 'EUR', 'TRY', 'CHF', 'JPY')
 origin_currency_picker.place(x=300, y=100, width=100)
 
-# Währungsauswahl nach
+# Zielwährung Switcher
 target_currency_label = tkinter.Label(mainWindow, text='Währung nach:')
 target_currency_label.place(x=200, y=150, width=100)
 target_currency_picker = tkinter.OptionMenu(mainWindow, target_currency_var, 'EUR', 'USD', 'TRY', 'CHF', 'JPY')
@@ -138,5 +139,6 @@ else:
     statusIndicator.place(x=35, y=10)
     mainCanvas.create_oval(15, 15, 30, 30, outline="black", fill="red", width=1)
 
+# Initialisierung Programmfenster
 mainCanvas.pack()
 mainWindow.mainloop()
